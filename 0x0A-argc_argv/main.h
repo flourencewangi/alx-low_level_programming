@@ -1,2 +1,4 @@
-int _putchar(char c); 
-int check_num(char *str);
+#ifndef _MAIN_H_
+#define _MAIN_H_
+
+#endif
