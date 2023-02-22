@@ -1,30 +1,45 @@
-#include "holberton.h"
+#include "main.h"
+
 /**
- * read_textfile - ...
- * @filename: The source file
- * @letters: Number of letters to reads and prints
+ * read_textfile - reads textfile, prints it to POSIX std output.
+ * @filename: is the file to read
+ * @letters: number of letters to read and print from file
  *
- *  Return: ...
- */
+ * Return: 0 if it fails, number of letters read and printed
+*/
+
 ssize_t read_textfile(const char *filename, size_t letters)
 {
-	int fd, readed;
-	char *buff = malloc(sizeof(char *) * letters);
+	ssize_t r_count, w_count;
+	int file_d;
+	char *buf;
 
-	if (!buff)
+	/* check if file is present */
+	if (filename == NULL)
 		return (0);
 
-	if (!filename)
+	file_d = open(filename, O_RDONLY); /* open file */
+	if (file_d == -1)
 		return (0);
 
-	fd = open(filename, O_RDONLY, 0600);
-	if (fd == -1)
+	buf = malloc(sizeof(char) * letters);
+	if (buf == NULL)
+	{
+		free(buf);
+		return (0);
+	}
+
+	r_count = read(file_d, buf, letters); /* read file */
+	if (r_count == -1)
 		return (0);
 
-	readed = read(fd, buff, letters);
-	write(STDOUT_FILENO, buff, readed);
+	w_count = write(STDOUT_FILENO, buf, r_count); /* write file */
+	if (w_count == -1 || r_count != w_count) /*check if write failed*/
+		return (0);
 
-	free(buff);
-	close(fd);
-	return (readed);
+	free(buf);
+
+	close(file_d); /*close file*/
+
+	return (w_count);
 }
